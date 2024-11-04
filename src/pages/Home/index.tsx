@@ -12,6 +12,7 @@ import { styled } from '@mui/material/styles';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import RssFeedRoundedIcon from '@mui/icons-material/RssFeedRounded';
 import { Author } from '../../components/Author';
+import { GeneralTemplate } from '../../components/template/general.template';
 
 
 const cardData = [
@@ -147,97 +148,99 @@ export const MainContent = () => {
     // };
 
     return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-            <Box
-                sx={{
-                display: { xs: 'flex', sm: 'none' },
-                flexDirection: 'row',
-                gap: 1,
-                width: { xs: '100%', md: 'fit-content' },
-                overflow: 'auto',
-                }}
-            >
-                <Search />
-                <IconButton size="small" aria-label="RSS feed">
-                    <RssFeedRoundedIcon />
-                </IconButton>
-            </Box>
-            <Box
-                sx={{
-                    display: 'flex',
-                    flexDirection: { xs: 'column-reverse', md: 'row' },
-                    width: '100%',
-                    justifyContent: 'space-between',
-                    alignItems: { xs: 'start', md: 'center' },
-                    gap: 4,
-                    overflow: 'auto',
-                }}
-            >
+        <GeneralTemplate>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                 <Box
                     sx={{
-                        display: { xs: 'none', sm: 'flex' },
-                        flexDirection: 'row',
-                        gap: 1,
-                        width: { xs: '100%', md: 'fit-content' },
-                        overflow: 'auto',
+                    display: { xs: 'flex', sm: 'none' },
+                    flexDirection: 'row',
+                    gap: 1,
+                    width: { xs: '100%', md: 'fit-content' },
+                    overflow: 'auto',
                     }}
-                    >
+                >
                     <Search />
                     <IconButton size="small" aria-label="RSS feed">
                         <RssFeedRoundedIcon />
                     </IconButton>
                 </Box>
-            </Box>
-            <Grid container spacing={2} columns={8}>
-                {
-                    cardData.map((data, index) => (
-                    <Grid
-                        key={index}
-                        size={{ xs: 12, md: 6 }}
-                        sx={{ marginX: 'auto' }}
-                    >
-                        <Box
-                            sx={{ display: 'flex', flexDirection: 'column', gap: 2, height: '100%' }}
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: { xs: 'column-reverse', md: 'row' },
+                        width: '100%',
+                        justifyContent: 'space-between',
+                        alignItems: { xs: 'start', md: 'center' },
+                        gap: 4,
+                        overflow: 'auto',
+                    }}
+                >
+                    <Box
+                        sx={{
+                            display: { xs: 'none', sm: 'flex' },
+                            flexDirection: 'row',
+                            gap: 1,
+                            width: { xs: '100%', md: 'fit-content' },
+                            overflow: 'auto',
+                        }}
                         >
-                            <SyledCard
-                                variant="outlined"
-                                onFocus={() => handleFocus(3)}
-                                onBlur={handleBlur}
-                                tabIndex={0}
-                                className={focusedCardIndex === 3 ? 'Mui-focused' : ''}
-                                sx={{ height: '100%' }}
+                        <Search />
+                        <IconButton size="small" aria-label="RSS feed">
+                            <RssFeedRoundedIcon />
+                        </IconButton>
+                    </Box>
+                </Box>
+                <Grid container spacing={2} columns={8}>
+                    {
+                        cardData.map((data, index) => (
+                        <Grid
+                            key={index}
+                            size={{ xs: 12, md: 6 }}
+                            sx={{ marginX: 'auto' }}
+                        >
+                            <Box
+                                sx={{ display: 'flex', flexDirection: 'column', gap: 2, height: '100%' }}
                             >
-                                <SyledCardContent
-                                    sx={{
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        justifyContent: 'space-between',
-                                        height: '100%',
-                                    }}
+                                <SyledCard
+                                    variant="outlined"
+                                    onFocus={() => handleFocus(3)}
+                                    onBlur={handleBlur}
+                                    tabIndex={0}
+                                    className={focusedCardIndex === 3 ? 'Mui-focused' : ''}
+                                    sx={{ height: '100%' }}
                                 >
-                                    <div>
-                                        <Typography gutterBottom variant="caption" component="div">
-                                            {data.tag}
-                                        </Typography>
-                                        <Typography gutterBottom variant="h6" component="div">
-                                            {data.title}
-                                        </Typography>
-                                        <StyledTypography
-                                            variant="body2"
-                                            color="text.secondary"
-                                            gutterBottom
-                                        >
-                                            {data.description}
-                                        </StyledTypography>
-                                    </div>
-                                </SyledCardContent>
-                                <Author authors={data.authors} />
-                            </SyledCard>
-                        </Box>
-                    </Grid>
-                    ))
-                }
-            </Grid>
-        </Box>
+                                    <SyledCardContent
+                                        sx={{
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            justifyContent: 'space-between',
+                                            height: '100%',
+                                        }}
+                                    >
+                                        <div>
+                                            <Typography gutterBottom variant="caption" component="div">
+                                                {data.tag}
+                                            </Typography>
+                                            <Typography gutterBottom variant="h6" component="div">
+                                                {data.title}
+                                            </Typography>
+                                            <StyledTypography
+                                                variant="body2"
+                                                color="text.secondary"
+                                                gutterBottom
+                                            >
+                                                {data.description}
+                                            </StyledTypography>
+                                        </div>
+                                    </SyledCardContent>
+                                    <Author authors={data.authors} />
+                                </SyledCard>
+                            </Box>
+                        </Grid>
+                        ))
+                    }
+                </Grid>
+            </Box>
+        </GeneralTemplate>
     );
 }

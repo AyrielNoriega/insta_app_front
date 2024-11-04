@@ -11,6 +11,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Drawer from '@mui/material/Drawer';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import { Link } from 'react-router-dom';
 
 import ColorModeIconDropdown from '.././theme/ColorModeIconDropdown';
 
@@ -52,7 +53,13 @@ export default function AppAppBar() {
             <StyledToolbar variant="dense" disableGutters>
             <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', px: 0 }}>
                 <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-                <Button variant="text" color="info" size="small">
+                <Button
+                    color="info"
+                    component={Link}
+                    size="small"
+                    to="/"
+                    variant="text"
+                >
                     Inicio
                 </Button>
                 {/* <Button variant="text" color="info" size="small">
@@ -70,10 +77,22 @@ export default function AppAppBar() {
                 alignItems: 'center',
                 }}
             >
-                <Button color="primary" variant="text" size="small">
+                <Button
+                    color="primary"
+                    component={Link}
+                    size="small"
+                    to="/sign-in"
+                    variant="text"
+                >
                     Sign in
                 </Button>
-                <Button color="primary" variant="contained" size="small">
+                <Button
+                    color="primary"
+                    component={Link}
+                    size="small"
+                    to="/sign-up"
+                    variant="contained"
+                >
                     Sign up
                 </Button>
                 <ColorModeIconDropdown />

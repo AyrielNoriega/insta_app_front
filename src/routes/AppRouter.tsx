@@ -1,20 +1,19 @@
 import { createBrowserRouter } from "react-router-dom";
-import { MainContent } from "../components/MainContent";
-
-
-
-// export const AppRouter = () => {
-//     return (
-//         <Routes>
-//             <Route path="/" element={<HomePage />} />
-//         </Routes>
-//     );
-// };
+import { MainContent } from "../pages/Home";
+import { SignIn, SignUp } from "../pages/Auth";
 
 
 export const AppRouter = createBrowserRouter([
     {
         path: "/",
         element: <MainContent />,
+    },
+    {
+        path: "/sing-in",
+        element: <SignIn />,
+    },
+    {
+        path: "/sing-up",
+        element: <SignUp />,
     },
 ]);

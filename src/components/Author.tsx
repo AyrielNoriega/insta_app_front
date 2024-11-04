@@ -1,6 +1,11 @@
 import { Avatar, AvatarGroup, Box, Typography } from "@mui/material";
 
-export const Author = ({ authors }: { authors: { name: string; avatar: string }[] }) => {
+interface AuthorProps {
+    author: string;
+    date: string;
+}
+
+export const Author = ({ author, date }: AuthorProps) => {
     return (
         <Box
             sx={{
@@ -16,22 +21,17 @@ export const Author = ({ authors }: { authors: { name: string; avatar: string }[
                 sx={{ display: 'flex', flexDirection: 'row', gap: 1, alignItems: 'center' }}
             >
                 <AvatarGroup max={3}>
-                {
-                    authors.map((author, index) => (
-                        <Avatar
-                            key={index}
-                            alt={author.name}
-                            src={author.avatar}
-                            sx={{ width: 24, height: 24 }}
-                        />
-                    ))
-                }
+                <Avatar
+                    alt={author}
+                    src=""
+                    sx={{ width: 24, height: 24 }}
+                />
                 </AvatarGroup>
                 <Typography variant="caption">
-                {authors.map((author) => author.name).join(', ')}
+                    { author }
                 </Typography>
             </Box>
-            <Typography variant="caption">July 14, 2021</Typography>
+            <Typography variant="caption">{ date }</Typography>
         </Box>
     );
 }

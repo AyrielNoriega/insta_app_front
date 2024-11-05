@@ -12,8 +12,12 @@ import Drawer from '@mui/material/Drawer';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from "react-router-dom";
 
 import ColorModeIconDropdown from '.././theme/ColorModeIconDropdown';
+import { AppDispatch, RootState } from '../store/store';
+import { fetchUserFromLocalStorage } from '../store/publication/thunks';
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
     display: 'flex',
@@ -33,10 +37,33 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
 
 export default function AppAppBar() {
     const [open, setOpen] = React.useState(false);
+    const navigate = useNavigate();
 
     const toggleDrawer = (newOpen: boolean) => () => {
         setOpen(newOpen);
     };
+
+    const dispatch: AppDispatch = useDispatch();
+    const { user } = useSelector((state: RootState ) => state.publication);
+
+    React.useEffect(() => {
+        dispatch(fetchUserFromLocalStorage());
+
+        return () => {
+            console.log('SignUp unmounted');
+        }
+    }, []);
+
+
+    const onSignOut = () => {
+        localStorage.removeItem('name');
+        localStorage.removeItem('email');
+        localStorage.removeItem('username');
+        localStorage.removeItem('token');
+
+        dispatch(fetchUserFromLocalStorage());
+        window.location.href = '/';
+    }
 
     return (
         <AppBar
@@ -62,9 +89,14 @@ export default function AppAppBar() {
                 >
                     Inicio
                 </Button>
-                {/* <Button variant="text" color="info" size="small">
-                    Testimonials
-                </Button> */}
+                {
+                    user.name && (
+                        <Button variant="text" color="info" size="small">
+                            Perfil - {user.name}
+                        </Button>
+                    )
+                }
+
                 {/* <Button variant="text" color="info" size="small" sx={{ minWidth: 0 }}>
                     Blog
                 </Button> */}
@@ -77,24 +109,41 @@ export default function AppAppBar() {
                 alignItems: 'center',
                 }}
             >
-                <Button
-                    color="primary"
-                    component={Link}
-                    size="small"
-                    to="/sign-in"
-                    variant="text"
-                >
-                    Sign in
-                </Button>
-                <Button
-                    color="primary"
-                    component={Link}
-                    size="small"
-                    to="/sign-up"
-                    variant="contained"
-                >
-                    Sign up
-                </Button>
+                {
+                    user.name ? (
+                        <Button
+                            color="primary"
+                            size="small"
+                            variant="contained"
+                            onClick={onSignOut}
+                        >
+                            Sign out
+                        </Button>
+                    ) : (
+                        <>
+                            <Button
+                                color="primary"
+                                component={Link}
+                                size="small"
+                                to="/sign-in"
+                                variant="text"
+                            >
+                                Sign in
+                            </Button>
+                            <Button
+                                color="primary"
+                                component={Link}
+                                size="small"
+                                to="/sign-up"
+                                variant="contained"
+                            >
+                                Sign up
+                            </Button>
+                        </>
+                    )
+
+                }
+
                 <ColorModeIconDropdown />
             </Box>
             <Box sx={{ display: { xs: 'flex', md: 'none' }, gap: 1 }}>

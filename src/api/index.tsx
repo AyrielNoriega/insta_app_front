@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { UserRegister, UserToken } from '../interfaces';
 
 export const getPublications = async () => {
     const config = {
@@ -18,17 +19,46 @@ export const getPublications = async () => {
 };
 
 
-export const login = async () => {
+export const registerUser = async (user: UserRegister) => {
+
     const config = {
-        method: 'get',
-        url: 'http://127.0.0.1:8000/api/v1/publications/',
-        headers: { }
+        method: 'post',
+        url: 'http://127.0.0.1:8000/api/v1/users/register',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        data: user
     };
 
 
     try {
         const response = await axios.request(config);
-        return response.data;
+        return response;
+    } catch (error) {
+        console.error('Error al obtener los datos de la API:', error);
+        throw error;
+    }
+};
+
+
+export const getToken = async (user: UserToken) => {
+    const data = new FormData();
+    data.append('username', user.username);
+    data.append('password', user.password);
+
+    const config = {
+        method: 'post',
+        url: 'http://127.0.0.1:8000/api/v1/token',
+        headers: {
+            'Accept': 'application/json',
+        },
+        data: data
+    };
+
+    try {
+        const response = await axios.request(config);
+        console.log(response);
+        return response;
     } catch (error) {
         console.error('Error al obtener los datos de la API:', error);
         throw error;

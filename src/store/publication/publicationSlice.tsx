@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { User } from '../../interfaces';
 
 interface Publications {
     id : number;
@@ -10,6 +11,11 @@ interface Publications {
 
 const initialState = {
     publications: [] as Publications[],
+    user: {
+        name: '',
+        username: '',
+        email: '',
+    } as User,
 };
 
 export const publicationSlice = createSlice({
@@ -18,12 +24,17 @@ export const publicationSlice = createSlice({
     reducers: {
         setPublications: (state, action) => {
             state.publications = action.payload;
-        }
+        },
+        setUser: (state, action) => {
+            console.log("en setUser", action.payload);
+            state.user = action.payload;
+        },
 
     }
 });
 
 // Action creators are generated for each case reducer function
 export const {
-    setPublications
+    setPublications,
+    setUser,
 } = publicationSlice.actions;

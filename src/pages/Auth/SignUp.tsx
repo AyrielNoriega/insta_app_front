@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
@@ -10,8 +11,13 @@ import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
+import { AppDispatch, RootState } from '../../store/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from "react-router-dom";
+
 import { FacebookIcon, GoogleIcon } from './components/CustomIcons';
 import { GeneralTemplate } from '../../components/template/general.template';
+import { fetchUserFromLocalStorage, register } from '../../store/publication/thunks';
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: 'flex',
@@ -58,62 +64,104 @@ const SignUpContainer = styled(Stack)(({ theme }) => ({
 
 
 export const SignUp = () => {
-    const [emailError, setEmailError] = React.useState(false);
-    const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
-    const [passwordError, setPasswordError] = React.useState(false);
-    const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
-    const [nameError, setNameError] = React.useState(false);
-    const [nameErrorMessage, setNameErrorMessage] = React.useState('');
+    const dispatch: AppDispatch = useDispatch();
+    const { user } = useSelector((state: RootState ) => state.publication);
+    const navigate = useNavigate();
+
+    const [emailError, setEmailError] = useState(false);
+    const [emailErrorMessage, setEmailErrorMessage] = useState('');
+    const [passwordError, setPasswordError] = useState(false);
+    const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
+    const [nameError, setNameError] = useState(false);
+    const [nameErrorMessage, setNameErrorMessage] = useState('');
+
+    const [loading, setLoading] = useState(false);
+
+    React.useEffect(() => {
+        dispatch(fetchUserFromLocalStorage());
+
+        return () => {
+            console.log('SignUp unmounted');
+        }
+    }, []);
+
+    React.useEffect(() => {
+        if (user.email && user.username && user.name) {
+            navigate('/');
+        }
+    }, [user]);
+
 
     const validateInputs = () => {
         const email = document.getElementById('email') as HTMLInputElement;
         const password = document.getElementById('password') as HTMLInputElement;
-        const name = document.getElementById('name') as HTMLInputElement;
+        const full_name = document.getElementById('full_name') as HTMLInputElement;
+        const username = document.getElementById('username') as HTMLInputElement;
 
         let isValid = true;
 
         if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
-        setEmailError(true);
-        setEmailErrorMessage('Please enter a valid email address.');
-        isValid = false;
+            setEmailError(true);
+            setEmailErrorMessage('Please enter a valid email address.');
+            isValid = false;
         } else {
-        setEmailError(false);
-        setEmailErrorMessage('');
+            setEmailError(false);
+            setEmailErrorMessage('');
         }
 
         if (!password.value || password.value.length < 6) {
-        setPasswordError(true);
-        setPasswordErrorMessage('Password must be at least 6 characters long.');
-        isValid = false;
+            setPasswordError(true);
+            setPasswordErrorMessage('Password must be at least 6 characters long.');
+            isValid = false;
         } else {
-        setPasswordError(false);
-        setPasswordErrorMessage('');
+            setPasswordError(false);
+            setPasswordErrorMessage('');
         }
 
-        if (!name.value || name.value.length < 1) {
-        setNameError(true);
-        setNameErrorMessage('Name is required.');
-        isValid = false;
+        if (!full_name.value || full_name.value.length < 1) {
+            setNameError(true);
+            setNameErrorMessage('Name is required.');
+            isValid = false;
         } else {
-        setNameError(false);
-        setNameErrorMessage('');
+            setNameError(false);
+            setNameErrorMessage('');
+        }
+
+        if (!username.value || username.value.length < 1) {
+            setNameError(true);
+            setNameErrorMessage('Name is required.');
+            isValid = false;
+        } else {
+            setNameError(false);
+            setNameErrorMessage('');
         }
 
         return isValid;
     };
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        if (nameError || emailError || passwordError) {
         event.preventDefault();
-        return;
+        if (nameError || emailError || passwordError) {
+            return;
         }
+
         const data = new FormData(event.currentTarget);
         console.log({
-        name: data.get('name'),
-        lastName: data.get('lastName'),
-        email: data.get('email'),
-        password: data.get('password'),
+            full_name: data.get('full_name'),
+            username: data.get('username'),
+            email: data.get('email'),
+            password: data.get('password'),
         });
+
+        const userData = {
+            name: data.get('full_name') as string,
+            username: data.get('username') as string,
+            email: data.get('email') as string,
+            password: data.get('password') as string,
+        }
+
+        dispatch(register(userData, navigate));
+        setLoading(true);
     };
 
     return (
@@ -133,13 +181,13 @@ export const SignUp = () => {
                     sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
                 >
                     <FormControl>
-                        <FormLabel htmlFor="name">Full name</FormLabel>
+                        <FormLabel htmlFor="full_name">Full name</FormLabel>
                         <TextField
                             autoComplete="name"
-                            name="name"
+                            name="full_name"
                             required
                             fullWidth
-                            id="name"
+                            id="full_name"
                             placeholder="Jon Snow"
                             error={nameError}
                             helperText={nameErrorMessage}
@@ -147,13 +195,13 @@ export const SignUp = () => {
                         />
                     </FormControl>
                     <FormControl>
-                        <FormLabel htmlFor="name">User name</FormLabel>
+                        <FormLabel htmlFor="username">User name</FormLabel>
                         <TextField
-                            autoComplete="name"
-                            name="name"
+                            autoComplete="username"
+                            name="username"
                             required
                             fullWidth
-                            id="name"
+                            id="username"
                             placeholder="JonSnow"
                             error={nameError}
                             helperText={nameErrorMessage}
@@ -196,6 +244,7 @@ export const SignUp = () => {
                             fullWidth
                             variant="contained"
                             onClick={validateInputs}
+                            disabled={loading}
                         >
                             Sign up
                         </Button>
@@ -203,11 +252,11 @@ export const SignUp = () => {
                             Already have an account?{' '}
                             <span>
                                 <Link
-                                href="/material-ui/getting-started/templates/sign-in/"
-                                variant="body2"
-                                sx={{ alignSelf: 'center' }}
+                                    href="/material-ui/getting-started/templates/sign-in/"
+                                    variant="body2"
+                                    sx={{ alignSelf: 'center' }}
                                 >
-                                Sign in
+                                    Sign in
                                 </Link>
                             </span>
                         </Typography>

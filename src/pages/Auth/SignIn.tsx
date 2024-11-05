@@ -12,9 +12,14 @@ import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
+import { AppDispatch, RootState } from '../../store/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from "react-router-dom";
+
 import { ForgotPassword } from './components/ForgotPassword';
 import { FacebookIcon, GoogleIcon } from './components/CustomIcons';
 import { GeneralTemplate } from '../../components/template/general.template';
+import { fetchUserFromLocalStorage } from '../../store/publication/thunks';
 
 
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -68,6 +73,10 @@ export const SignIn = () => {
     const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
     const [open, setOpen] = React.useState(false);
 
+    const dispatch: AppDispatch = useDispatch();
+    const { user } = useSelector((state: RootState ) => state.publication);
+    const navigate = useNavigate();
+
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -88,6 +97,22 @@ export const SignIn = () => {
         });
     };
 
+    React.useEffect(() => {
+        dispatch(fetchUserFromLocalStorage());
+
+        return () => {
+            console.log('SignUp unmounted');
+        }
+    }, []);
+
+    React.useEffect(() => {
+        console.log('SignUp user changed', user);
+        
+        if (user.email && user.username && user.name) {
+            navigate('/');
+        }
+    }, [user]);
+
     const validateInputs = () => {
         const email = document.getElementById('email') as HTMLInputElement;
         const password = document.getElementById('password') as HTMLInputElement;
@@ -95,21 +120,21 @@ export const SignIn = () => {
         let isValid = true;
 
         if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
-        setEmailError(true);
-        setEmailErrorMessage('Please enter a valid email address.');
-        isValid = false;
+            setEmailError(true);
+            setEmailErrorMessage('Please enter a valid email address.');
+            isValid = false;
         } else {
-        setEmailError(false);
-        setEmailErrorMessage('');
+            setEmailError(false);
+            setEmailErrorMessage('');
         }
 
         if (!password.value || password.value.length < 6) {
-        setPasswordError(true);
-        setPasswordErrorMessage('Password must be at least 6 characters long.');
-        isValid = false;
+            setPasswordError(true);
+            setPasswordErrorMessage('Password must be at least 6 characters long.');
+            isValid = false;
         } else {
-        setPasswordError(false);
-        setPasswordErrorMessage('');
+            setPasswordError(false);
+            setPasswordErrorMessage('');
         }
 
         return isValid;

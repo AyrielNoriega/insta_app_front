@@ -50,7 +50,7 @@ interface PublicationCardProps {
     title: string;
     content: string;
     author: string;
-    date: string;
+    created_at: string;
 }
 
 
@@ -59,7 +59,7 @@ export const PublicationCard = (props: PublicationCardProps) => {
         title,
         content,
         author,
-        date
+        created_at
     } = props;
 
     const [focusedCardIndex, setFocusedCardIndex] = useState<number | null>(
@@ -114,7 +114,7 @@ export const PublicationCard = (props: PublicationCardProps) => {
                             </StyledTypography>
                         </div>
                     </SyledCardContent>
-                    <Author author={ author} date={ date } />
+                    <Author author={ author} date={ created_at } />
                 </SyledCard>
             </Box>
         </Grid>

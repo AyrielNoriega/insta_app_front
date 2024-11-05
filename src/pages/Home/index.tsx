@@ -83,7 +83,7 @@ export const MainContent = () => {
                                 title={data.title}
                                 content={data.content}
                                 author={data.author}
-                                date={data.date}
+                                created_at={data.date}
                             />
                         ))
                     }

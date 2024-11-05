@@ -1,50 +1,55 @@
-# React + TypeScript + Vite
+# Insta App Front
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este es el proyecto frontend, desarrollado con React.js y utilizando Vite como herramienta de construcción y Yarn como administrador de dependencias.
 
-Currently, two official plugins are available:
+## Requisitos
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Node.js (versión v22.11.0)
+- Yarn (versión 1.22.19)
 
-## Expanding the ESLint configuration
+## Instalación
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+1. Clona el repositorio:
+  ```bash
+  git clone https://github.com/tu-usuario/insta_app_front.git
+  ```
+2. Navega al directorio del proyecto:
+  ```bash
+  cd insta_app_front
+  ```
+3. Instala las dependencias:
+  ```bash
+  yarn install
+  ```
 
-- Configure the top-level `parserOptions` property like this:
+## Ejecución en desarrollo
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+Para iniciar el servidor de desarrollo, ejecuta:
+```bash
+yarn dev
 ```
+Esto abrirá la aplicación en `http://localhost:3000`.
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+## Construcción para producción
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+Para crear una versión optimizada para producción, ejecuta:
+```bash
+yarn build
 ```
+Los archivos generados se encontrarán en el directorio `dist`.
+
+## Scripts disponibles
+
+- `yarn dev`: Inicia el servidor de desarrollo.
+- `yarn build`: Construye la aplicación para producción.
+- `yarn serve`: Sirve la aplicación construida.
+
+## Contribución
+
+Si deseas contribuir a este proyecto, por favor sigue estos pasos:
+
+1. Haz un fork del repositorio.
+2. Crea una nueva rama (`git checkout -b feature/nueva-funcionalidad`).
+3. Realiza tus cambios y haz commit (`git commit -am 'Añadir nueva funcionalidad'`).
+4. Sube tus cambios (`git push origin feature/nueva-funcionalidad`).
+5. Abre un Pull Request.

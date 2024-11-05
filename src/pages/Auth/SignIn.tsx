@@ -7,6 +7,7 @@ import Divider from '@mui/material/Divider';
 import FormLabel from '@mui/material/FormLabel';
 import FormControl from '@mui/material/FormControl';
 import Link from '@mui/material/Link';
+import { Link as LinkRouter } from 'react-router-dom';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
@@ -19,7 +20,7 @@ import { useNavigate } from "react-router-dom";
 import { ForgotPassword } from './components/ForgotPassword';
 import { FacebookIcon, GoogleIcon } from './components/CustomIcons';
 import { GeneralTemplate } from '../../components/template/general.template';
-import { fetchUserFromLocalStorage } from '../../store/publication/thunks';
+import { authenticateUser, fetchUserFromLocalStorage } from '../../store/publication/thunks';
 
 
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -67,11 +68,13 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
 
 
 export const SignIn = () => {
-    const [emailError, setEmailError] = React.useState(false);
-    const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
+    const [usernameError, setEmailError] = React.useState(false);
+    const [usernameErrorMessage, setEmailErrorMessage] = React.useState('');
     const [passwordError, setPasswordError] = React.useState(false);
     const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
     const [open, setOpen] = React.useState(false);
+
+    const [loading, setLoading] = React.useState(false);
 
     const dispatch: AppDispatch = useDispatch();
     const { user } = useSelector((state: RootState ) => state.publication);
@@ -86,15 +89,24 @@ export const SignIn = () => {
     };
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        if (emailError || passwordError) {
         event.preventDefault();
-        return;
+        if (usernameError || passwordError) {
+            return;
         }
+
         const data = new FormData(event.currentTarget);
         console.log({
-        email: data.get('email'),
-        password: data.get('password'),
+            username: data.get('username'),
+            password: data.get('password'),
         });
+
+        const userData = {
+            username: data.get('username') as string,
+            password: data.get('password') as string,
+        }
+
+        dispatch(authenticateUser(userData, navigate));
+        setLoading(true);
     };
 
     React.useEffect(() => {
@@ -114,14 +126,14 @@ export const SignIn = () => {
     }, [user]);
 
     const validateInputs = () => {
-        const email = document.getElementById('email') as HTMLInputElement;
+        const username = document.getElementById('username') as HTMLInputElement;
         const password = document.getElementById('password') as HTMLInputElement;
 
         let isValid = true;
 
-        if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
+        if (!username.value || password.value.length < 3) {
             setEmailError(true);
-            setEmailErrorMessage('Please enter a valid email address.');
+            setEmailErrorMessage('Please enter a valid username.');
             isValid = false;
         } else {
             setEmailError(false);
@@ -163,21 +175,21 @@ export const SignIn = () => {
                         }}
                     >
                         <FormControl>
-                        <FormLabel htmlFor="email">Email</FormLabel>
+                        <FormLabel htmlFor="username">User name</FormLabel>
                         <TextField
-                            error={emailError}
-                            helperText={emailErrorMessage}
-                            id="email"
-                            type="email"
-                            name="email"
-                            placeholder="your@email.com"
-                            autoComplete="email"
+                            error={usernameError}
+                            helperText={usernameErrorMessage}
+                            id="username"
+                            type="username"
+                            name="username"
+                            placeholder="username"
+                            autoComplete="username"
                             autoFocus
                             required
                             fullWidth
                             variant="outlined"
-                            color={emailError ? 'error' : 'primary'}
-                            sx={{ ariaLabel: 'email' }}
+                            color={usernameError ? 'error' : 'primary'}
+                            sx={{ ariaLabel: 'username' }}
                         />
                         </FormControl>
                         <FormControl>
@@ -218,6 +230,7 @@ export const SignIn = () => {
                             fullWidth
                             variant="contained"
                             onClick={validateInputs}
+                            disabled={loading}
                         >
                             Sign in
                         </Button>
@@ -225,7 +238,8 @@ export const SignIn = () => {
                             Don&apos;t have an account?{' '}
                         <span>
                             <Link
-                                href="/material-ui/getting-started/templates/sign-in/"
+                                component={LinkRouter}
+                                to="/sign-up"
                                 variant="body2"
                                 sx={{ alignSelf: 'center' }}
                             >

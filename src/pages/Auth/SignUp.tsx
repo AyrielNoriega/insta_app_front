@@ -6,6 +6,7 @@ import Divider from '@mui/material/Divider';
 import FormLabel from '@mui/material/FormLabel';
 import FormControl from '@mui/material/FormControl';
 import Link from '@mui/material/Link';
+import { Link as LinkRouter } from 'react-router-dom';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
@@ -252,7 +253,8 @@ export const SignUp = () => {
                             Already have an account?{' '}
                             <span>
                                 <Link
-                                    href="/material-ui/getting-started/templates/sign-in/"
+                                    component={LinkRouter}
+                                    to="/sign-in"
                                     variant="body2"
                                     sx={{ alignSelf: 'center' }}
                                 >

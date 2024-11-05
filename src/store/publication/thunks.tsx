@@ -3,7 +3,7 @@ import { jwtDecode } from "jwt-decode";
 
 import { getPublications, getToken, registerUser } from "../../api";
 import { setPublications, setUser } from "./publicationSlice";
-import { User, UserRegister } from "../../interfaces";
+import { User, UserRegister, UserToken } from "../../interfaces";
 
 // Obtener todas las publicaciones
 export const getAllPublications = () => {
@@ -54,34 +54,41 @@ export const register = (user: UserRegister, navigate: (path: string) => void) =
             console.log("No se pudo obtener el token", register.data);
 
         }
-
-
-
     };
 };
 
 
-// Interfaz para las credenciales del usuario
-interface UserCredentials {
-    email: string;
-    password: string;
-}
 
 // Función para autenticar al usuario y guardar el token en localStorage
-export const authenticateUser = (credentials: UserCredentials) => {
+export const authenticateUser = (user: UserToken, navigate: (path: string) => void) => {
     return async (dispatch: Dispatch) => {
-        // try {
-        //     const token = await loginUser(credentials);
+        try {
+                //Obtener token
+                const register = await getToken(user);
+                if (register.status == 200) {
+                    const dataToken = {
+                        access_token: register.data.access_token,
+                        token_type: register.data.token_type,
+                    }
+                    // Establecer usuario
+                    dispatch(setUser(user));
+                    setTokenLocalStorage(dataToken.access_token);
+                    const dataUser: User = {
+                        name: register.data.name,
+                        username: register.data.username,
+                        email: register.data.email,
+                    }
+                    setUserInLocalStorage(dataUser);
 
-        //     // Guardar el token en Local Storage
-        //     setTokenLocalStorage(token);
+                    navigate('/');
+                }
 
-        //     // Establecer usuario (puedes decodificar el token para obtener los datos del usuario)
-        //     const user = jwtDecode(token);
-        //     dispatch(setUser(user));
-        // } catch (error) {
-        //     console.log('No se pudo autenticar al usuario', error);
-        // }
+            // Establecer usuario (decodificar el token para obtener los datos del usuario)
+            // const user = jwtDecode(token);
+            dispatch(setUser(user));
+        } catch (error) {
+            console.log('No se pudo autenticar al usuario', error);
+        }
     };
 };
 
@@ -135,7 +142,7 @@ export const setUserInLocalStorage = (user: User) => {
 
 export const fetchUserFromLocalStorage = () => {
     console.log('fetchUserFromLocalStorage');
-    
+
     return (dispatch: Dispatch) => {
         const name = localStorage.getItem('name') as string;
         const username = localStorage.getItem('username') as string;

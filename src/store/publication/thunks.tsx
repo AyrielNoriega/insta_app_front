@@ -1,7 +1,7 @@
 import { Dispatch } from "redux";
 import { jwtDecode } from "jwt-decode";
 
-import { getPublications, getToken, registerUser, updateUser } from "../../api";
+import { getPublications, getToken, registerUser, updateUser, getPublicationsByUser } from "../../api";
 import { setPublications, setUser } from "./publicationSlice";
 import { User, UserRegister, UserToken } from "../../interfaces";
 
@@ -11,6 +11,19 @@ export const getAllPublications = () => {
     return async (dispatch: Dispatch) => {
 
         const res = await getPublications();
+
+        dispatch(setPublications(res));
+
+    };
+};
+
+
+// Obtener todas las publicaciones de un usuario
+export const getPublicationsForUser = (username: string) => {
+
+    return async (dispatch: Dispatch) => {
+
+        const res = await getPublicationsByUser(username);
 
         dispatch(setPublications(res));
 

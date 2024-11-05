@@ -13,7 +13,6 @@ import MenuIcon from '@mui/icons-material/Menu';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from "react-router-dom";
 
 import ColorModeIconDropdown from '.././theme/ColorModeIconDropdown';
 import { AppDispatch, RootState } from '../store/store';
@@ -37,7 +36,6 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
 
 export default function AppAppBar() {
     const [open, setOpen] = React.useState(false);
-    const navigate = useNavigate();
 
     const toggleDrawer = (newOpen: boolean) => () => {
         setOpen(newOpen);
@@ -91,7 +89,13 @@ export default function AppAppBar() {
                 </Button>
                 {
                     user.name && (
-                        <Button variant="text" color="info" size="small">
+                        <Button
+                            variant="text"
+                            color="info"
+                            size="small"
+                            component={Link}
+                            to={`/profile/${user.username}`}
+                        >
                             Perfil - {user.name}
                         </Button>
                     )

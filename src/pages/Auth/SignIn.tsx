@@ -90,6 +90,7 @@ export const SignIn = () => {
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        setLoading(true);
         if (usernameError || passwordError) {
             return;
         }
@@ -106,7 +107,7 @@ export const SignIn = () => {
         }
 
         dispatch(authenticateUser(userData, navigate));
-        setLoading(true);
+        setLoading(false);
     };
 
     React.useEffect(() => {

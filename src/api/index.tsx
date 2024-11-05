@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { UserRegister, UserToken } from '../interfaces';
+import { User, UserRegister, UserToken } from '../interfaces';
 
 export const getPublications = async () => {
     const config = {
@@ -33,6 +33,32 @@ export const registerUser = async (user: UserRegister) => {
 
     try {
         const response = await axios.request(config);
+        return response;
+    } catch (error) {
+        console.error('Error al obtener los datos de la API:', error);
+        throw error;
+    }
+};
+
+export const updateUser = async (user: User, token: string) => {
+    console.log(user);
+    
+    const config = {
+        method: 'put',
+        url: `http://127.0.0.1:8000/api/v1/users/${user.id}`,
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        },
+        data: user
+    };
+
+
+    try {
+        const response = await axios.request(config);
+        console.log(response);
+        
         return response;
     } catch (error) {
         console.error('Error al obtener los datos de la API:', error);

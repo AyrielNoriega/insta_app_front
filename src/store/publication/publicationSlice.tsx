@@ -12,6 +12,7 @@ interface Publications {
 const initialState = {
     publications: [] as Publications[],
     user: {
+        id: '',
         name: '',
         username: '',
         email: '',

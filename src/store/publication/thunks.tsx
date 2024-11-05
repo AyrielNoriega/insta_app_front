@@ -27,7 +27,6 @@ export const register = (user: UserRegister, navigate: (path: string) => void) =
 
         const res = await registerUser(user);
         // dispatch(setUser(res));
-        console.log(res);
         if (res.status != 201) {
             console.log('No se registro el user registrado', res.data);
         }
@@ -61,31 +60,32 @@ export const register = (user: UserRegister, navigate: (path: string) => void) =
 
 // Función para autenticar al usuario y guardar el token en localStorage
 export const authenticateUser = (user: UserToken, navigate: (path: string) => void) => {
+
     return async (dispatch: Dispatch) => {
         try {
                 //Obtener token
                 const register = await getToken(user);
                 if (register.status == 200) {
+
                     const dataToken = {
                         access_token: register.data.access_token,
                         token_type: register.data.token_type,
                     }
-                    // Establecer usuario
-                    dispatch(setUser(user));
-                    setTokenLocalStorage(dataToken.access_token);
+
+                    const user_jwt: User = jwtDecode(dataToken.access_token);
+
                     const dataUser: User = {
-                        name: register.data.name,
-                        username: register.data.username,
-                        email: register.data.email,
+                        name: user_jwt.name,
+                        username: user_jwt.username,
+                        email: user_jwt.email,
                     }
+                    // Establecer usuario
+                    dispatch(setUser(dataUser));
+                    setTokenLocalStorage(dataToken.access_token);
                     setUserInLocalStorage(dataUser);
 
                     navigate('/');
                 }
-
-            // Establecer usuario (decodificar el token para obtener los datos del usuario)
-            // const user = jwtDecode(token);
-            dispatch(setUser(user));
         } catch (error) {
             console.log('No se pudo autenticar al usuario', error);
         }
@@ -141,7 +141,6 @@ export const setUserInLocalStorage = (user: User) => {
 
 
 export const fetchUserFromLocalStorage = () => {
-    console.log('fetchUserFromLocalStorage');
 
     return (dispatch: Dispatch) => {
         const name = localStorage.getItem('name') as string;
